@@ -5,6 +5,8 @@ var express = require('express');
 var app = express();
 // logging
 var morgan = require('morgan');
+var logger = require('./logger')
+logger.initialize();
 app.use(morgan('combined'));
 
 // Run app
