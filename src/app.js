@@ -1,10 +1,11 @@
-// logging
-var morgan = require('morgan');
 // Environment configuration
 var config = require('./config');
 // Server APP
 var express = require('express');
 var app = express();
+// logging
+var morgan = require('morgan');
+app.use(morgan('combined'));
 
 // Run app
 var server = app.listen(config.server_port, function() {
