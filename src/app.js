@@ -5,9 +5,11 @@ var express = require('express');
 var app = express();
 // logging
 var morgan = require('morgan');
-var logger = require('./logger')
+var logger = require('./logger');
 logger.initialize();
+// Terminal logging
 app.use(morgan('combined'));
+app.use(morgan('combined', {stream: logger.AccessLogStream}));
 
 // Run app
 var server = app.listen(config.server_port, function() {
