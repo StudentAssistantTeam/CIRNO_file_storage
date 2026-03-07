@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/StudentAssistantTeam/CIRNO_file_storage#readme",
   "dependencies": {
+    "ali-oss": "^6.23.0",
     "body-parser": "^2.2.2",
     "cookie-parser": "^1.4.7",
     "dotenv": "^17.3.1",
