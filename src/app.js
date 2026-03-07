@@ -10,7 +10,11 @@ logger.initialize();
 // Terminal logging
 app.use(morgan('combined'));
 app.use(morgan('combined', {stream: logger.AccessLogStream}));
-
+// Middleware
+app.use(function (err, req, res, next) {
+    console.error(err.stack);
+    return res.status(500).send("Internal Server Error");
+});
 // Run app
 var server = app.listen(config.server_port, function() {
     var host = server.address().address;

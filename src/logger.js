@@ -9,7 +9,10 @@ module.exports = {
         // Create log directory
         if(!fs.existsSync('logs/app.log')){
             fs.mkdirSync('logs', { recursive: true });
-            fs.appendFileSync('logs/app.log', 'log file created at '+ new Date() + '\n')
+            fs.appendFileSync(
+                'logs/app.log', 
+                'log file created at '+ new Date() + '\n'
+            )
         }
     },
     AccessLogStream:AccessLogStream

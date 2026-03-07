@@ -2,6 +2,13 @@
 var config = require('./config');
 // oss
 var OSS = require('ali-oss');
+// request header
+const headers = {
+    'x-oss-storage-class': 'Standard',
+    'x-oss-object-acl': 'private',
+    'Content-Disposition': 'attachment',
+    'x-oss-forbid-overwrite': 'true'
+};
 // OSS object
 module.exports = {
     // Creating client
@@ -12,5 +19,10 @@ module.exports = {
         authorizationV4: true,
         bucket: config.oss_bucket_name,
         endpoint: config.oss_endpoint
-    })
+    }),
+    // Upload file
+    uploadFlieFromLocal: async function(localFile, key) {
+        const result = await this.client.put(key, localFile, {headers});
+        return result;
+    }
 }
