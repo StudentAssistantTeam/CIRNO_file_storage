@@ -21,8 +21,16 @@ module.exports = {
         endpoint: config.oss_endpoint
     }),
     // Upload file
-    uploadFlieFromLocal: async function(localFile, key) {
-        const result = await this.client.put(key, localFile, {headers});
+    uploadFlieFromLocal: async function(localFile, key, directory) {
+        const result = await this.client.put(`${directory}/${key}`, 
+            localFile, 
+            {headers});
+        return result;
+    },
+    // Create directory
+    createDirectory: async function(directory){
+        const result = await this.client.put(`${directory}/`,  
+            {headers});
         return result;
     }
 }
