@@ -1,7 +1,9 @@
 // Environment configuration
 var config = require('./config');
+
 // oss
 var OSS = require('ali-oss');
+
 // request header
 const headers = {
     'x-oss-storage-class': 'Standard',
@@ -9,6 +11,7 @@ const headers = {
     'Content-Disposition': 'attachment',
     'x-oss-forbid-overwrite': 'true'
 };
+
 // OSS object
 module.exports = {
     // Creating client
@@ -30,6 +33,12 @@ module.exports = {
     // Create directory
     createDirectory: async function(directory){
         const result = await this.client.put(`${directory}/`,  
+            {headers});
+        return result;
+    },
+    // Delete Directory
+    deleteDirectory: async function(directory){
+        const result = await this.client.delete(`${directory}`,
             {headers});
         return result;
     }
