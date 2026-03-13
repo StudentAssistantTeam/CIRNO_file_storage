@@ -14,7 +14,8 @@ module.exports = {
     server_port: server_port,
     oss_key_id: oss_key_id,
     oss_key_secret: oss_key_secret,
-    oss_bucket_name: oss_bucket_name,
+    oss_endpoint: oss_endpoint,
     oss_region_id: oss_region_id,
-    oss_endpoint: oss_endpoint
+    oss_endpoint: oss_endpoint,
+    oss_bucket_name: oss_bucket_name
 };

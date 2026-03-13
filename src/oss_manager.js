@@ -33,10 +33,10 @@ module.exports = {
     // Create directory
     createDirectory: async function(directory){
         const result = await this.client.put(`${directory}/`,  
-            {headers});
+            new Buffer(''));
         return result;
     },
-    // Delete Directory
+    // Delete directory
     deleteDirectory: async function(directory){
         const result = await this.client.delete(`${directory}`,
             {headers});

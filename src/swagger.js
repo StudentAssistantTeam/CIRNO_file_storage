@@ -1,6 +1,9 @@
 // Get Swagger
 const swaggerJSDoc = require('swagger-jsdoc')
 
+// Get path
+const path = require('path');
+
 // Swagger Definitions
 const swaggerDefinition = {
   info: {
@@ -8,15 +11,19 @@ const swaggerDefinition = {
     version: '0.1.0',
     description: 'Demonstrating how to describe a RESTful API with Swagger'
   },
-  host: 'localhost:8010',
-  basePath: '/'
+  servers: [
+    {
+      url: 'http://localhost:8010',
+      description: 'Development server'
+    }   
+  ]
 }
 
 var options = {
   // import swaggerDefinitions
   swaggerDefinition: swaggerDefinition,
   // path to the API docs
-  apis: ['./app.js'] // 扫描routes文件夹下面的所有js文件
+  apis: [path.join(__dirname, 'app.js')]
 }
 
 const swaggerSpec = swaggerJSDoc(options)
