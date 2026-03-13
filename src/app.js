@@ -4,6 +4,7 @@ var config = require('./config');
 // Server APP
 var express = require('express');
 var app = express();
+app.use(express.static('public'));
 
 // OSS Manager
 var oss_manager = require('./oss_manager');
@@ -15,6 +16,9 @@ var { body, validationResult } = require('express-validator');
 var morgan = require('morgan');
 var logger = require('./logger');
 logger.initialize();
+
+// Swagger
+var swaggerDocument = require('./swagger');
 
 // Terminal logging
 app.use(morgan('combined'));
@@ -30,11 +34,12 @@ console.log = function (...args) {
   logger.AccessLogStream.write(message + '\n');
 };
 
-// Middleware
-app.use(function (err, req, res, next) {
-    console.error(err.stack);
-    return res.status(500).send("Internal Server Error");
-});
+// Swagger UI
+app.get('/swagger.json', function(req, res) {
+        res.setHeader('Content-Type', 'application/json');
+        res.send(swaggerDocument);
+    }
+)
 
 // Create Directory
 app.post('/createDirectory', 
