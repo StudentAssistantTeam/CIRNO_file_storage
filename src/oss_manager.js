@@ -23,6 +23,7 @@ module.exports = {
         bucket: config.oss_bucket_name,
         endpoint: config.oss_endpoint
     }),
+
     // Upload file
     uploadFlieFromLocal: async function(localFile, key, directory) {
         const result = await this.client.put(`${directory}/${key}`, 
@@ -30,16 +31,30 @@ module.exports = {
             {headers});
         return result;
     },
+
     // Create directory
     createDirectory: async function(directory){
         const result = await this.client.put(`${directory}/`,  
             new Buffer(''));
         return result;
     },
+
     // Delete directory
     deleteDirectory: async function(directory){
-        const result = await this.client.delete(`${directory}`,
-            {headers});
+        const result = await this.client.delete(`${directory}/`);
         return result;
+    },
+
+    // Find if file exists
+    fileExists: async function(path) {
+        try {
+            await this.client.head(path, {});
+            return true;
+        }  catch (err) {
+            if (err.code === 'NoSuchKey') {
+                return false;
+            }
+            throw err;
+        }
     }
 }
