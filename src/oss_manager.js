@@ -56,5 +56,23 @@ module.exports = {
             }
             throw err;
         }
+    },
+    
+    //List files in directory
+    listFiles: async function(directory) {
+        const result = await this.client.list({
+            prefix: directory,
+            delimiter: '/'
+        })
+        return result.objects.map(obj => obj.name);
+    },
+
+    // Error process
+    processError: function(errList) {
+        var error = "";
+        for (var er in errList) {
+            error += key + "\n";
+        }
+        return error;
     }
 }

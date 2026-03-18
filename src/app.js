@@ -82,17 +82,33 @@ app.post('/createDirectory',
                 // Request body checking
                 const errors = validationResult(req);
                 if (!errors.isEmpty()) {
-                    return res.status(400).json({ errors: errors.array() });
+                    var content = {
+                        success: false,
+                        reason: oss_manager.processError(errors.array())
+                    };
+                    return res.status(400).json(content);
                 }
                 result = await oss_manager.createDirectory(req.body.directory);
-                return res.status(200).json(result);
+                var content = {
+                    success: true,
+                    result: result
+                };
+                return res.status(200).json(content);
             }else{
-                return res.status(409).json({ message: 'Directory already exists' });
+                var content = {
+                    success: false,
+                    reason: 'Directory already exists'
+                };
+                return res.status(409).json(content);
             }
         }catch(err){
             // Error handling
             console.error(err);
-            return res.status(500).send(`Internal Server Error: ${err}`);
+            var content = {
+                success: false,
+                reason: `Internal Server Error: ${err}`
+            };
+            return res.status(500).json(content);
         }
     }
 );
@@ -136,20 +152,98 @@ app.post('/deleteDirectory',
                 // Request body checking
                 const errors = validationResult(req);
                 if (!errors.isEmpty()) {
-                    return res.status(400).json({ errors: errors.array() });
+                    var content = {
+                        success: false,
+                        reason: oss_manager.processError(errors.array())
+                    };
+                    return res.status(400).json(content);
                 }
                 result = await oss_manager.deleteDirectory(req.body.directory);
-                return res.status(200).json(result);
+                var content = {
+                    success: true,
+                    result: result
+                };
+                return res.status(200).json(content);
             }else{
-                return res.status(404).json({ message: 'Directory not found' });
+                var content = {
+                    success: false,
+                    reason: 'Directory not found'
+                };
+                return res.status(404).json(content);
             }
         }catch(err){
             // Error handling
             console.error(err);
-            return res.status(500).send(`Internal Server Error: ${err}`);
+            var content = {
+                success: false,
+                reason: `Internal Server Error: ${err}`
+            };
+            return res.status(500).json(content);
         }
     }
 );
+
+/**
+ * @swagger
+ * /listFiles:
+ *    post:
+ *      tags:
+ *      - List Files
+ *      summary: List files in a directory in OSS
+ *      description: List files in a directory in OSS
+ *      produces:
+ *      - application/json
+ *      parameters:
+ *      - in: body
+ *        name: body
+ *        description: parameters for checking whether a file exists in OSS
+ *        required: true
+ *        schema:
+ *          type: object
+ *          properties:
+ *            directory:
+ *              type: string
+ *              description: directory name
+ *              example: my-directory
+ *      responses:
+ *        200:
+ *          description: successful operation
+ *        400:
+ *          description: Invalid input supplied
+ *        500:
+ *          description: Internal Server Error
+ * */
+// List files in directory
+app.post('/listFiles', 
+    body('directory').notEmpty().withMessage('Directory is required'), 
+    async function(req, res) {
+    try{
+        // Check if directory exists
+        if(await oss_manager.fileExists(`${req.body.directory}/`)){
+            console.log(`List files in directory ${req.body.directory}`);
+            const files = await oss_manager.listFiles(req.body.directory);
+            var content = {
+                "success": true,
+                "files": files
+            };
+            return res.status(200).json(content);
+        }else{
+            var content = {
+                "success": false,
+                "reason": "Directory not exist"
+            };
+            return res.status(404).json(content);
+        }
+    }catch(err){
+        // Error handling
+        console.error(err);
+        var content = {
+            "success": false,
+            "reason": err
+        };
+        return res.status(500).json(content);
+    }
+});
 
 // Run app
 var server = app.listen(config.server_port, function() {
