@@ -326,6 +326,68 @@ app.post('/uploadFile',
     }
 );
 
+/**
+ * @swagger
+ * /deleteFile:
+ *    post:
+ *      tags:
+ *      - Delete File
+ *      summary: Delete a file in OSS
+ *      description: Delete a file in OSS
+ *      produces:
+ *      - application/json
+ *      parameters:
+ *      - in: body
+ *        name: body
+ *        required: true
+ *        schema:
+ *          type: object
+ *          properties:
+ *            directory:
+ *              type: string
+ *              description: directory name
+ *              example: my-directory
+ *            filename:
+ *              type: string
+ *              description: file name to get deleted
+ *      responses:
+ *        200:
+ *          description: successful operation
+ *        400:
+ *          description: Invalid input supplied
+ *        500:
+ *          description: Internal Server Error
+ * */
+// File deletion
+app.post('/deleteFile', 
+    body('directory').notEmpty().withMessage('Directory is required'),
+    body('filename').notEmpty().withMessage('Filename is required'),
+    async function(req, res) {
+        try{
+            if(await oss_manager.fileExists(`${req.body.directory}/${req.body.filename}`)){
+                var result = await oss_manager.deleteFile(req.body.directory, req.body.filename);
+                var content = {
+                    success: true,
+                    result: result
+                }
+                return res.status(200).json(content);
+            }else{
+                var content = {
+                    success: true,
+                    reason: "File not exist"
+                }
+                return res.status(404).json(content);
+            }
+        }catch(err){
+            var content = {
+                success: false,
+                reason: err
+            }
+            return res.status(500).json(content);
+        }
+    }
+)
+
 // Run app
 var server = app.listen(config.server_port, function() {
     var host = server.address().address;

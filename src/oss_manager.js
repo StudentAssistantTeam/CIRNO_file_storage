@@ -32,6 +32,12 @@ module.exports = {
         return result;
     },
 
+    // Delete file
+    deleteFile: async function(directory, fileName) {
+        const result = await this.client.delete(`${directory}/${fileName}`);
+        return result;
+    },
+
     // Create directory
     createDirectory: async function(directory){
         const result = await this.client.put(`${directory}/`,  
